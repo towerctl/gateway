@@ -29,7 +29,8 @@ def _keys(env: str) -> set[str]:
 
 
 def require_api_key(x_api_key: str = Header(default="")) -> str:
-    if x_api_key not in _keys("TOWERCTL_API_KEYS"):
+    # internal keys are a superset: the runner reads public endpoints too
+    if x_api_key not in (_keys("TOWERCTL_API_KEYS") | _keys("TOWERCTL_INTERNAL_KEYS")):
         raise HTTPException(401, "invalid API key")
     return x_api_key
 

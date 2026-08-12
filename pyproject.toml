@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "towerctl API edge: auth, routing, run lifecycle, OpenAPI owner"
 requires-python = ">=3.10"
 dependencies = [
-    "towerctl-core @ git+https://github.com/towerctl/core@v0.1.0",
+    "towerctl-core @ git+https://github.com/towerctl/core@v0.1.1",
     "fastapi>=0.111",
     "uvicorn>=0.30",
 ]
