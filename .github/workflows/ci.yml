@@ -1,0 +1,9 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    uses: towerctl/infra/.github/workflows/python-ci.yml@main

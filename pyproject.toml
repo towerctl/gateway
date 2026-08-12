@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "towerctl-gateway"
+version = "0.1.0"
+description = "towerctl API edge: auth, routing, run lifecycle, OpenAPI owner"
+requires-python = ">=3.10"
+dependencies = [
+    "towerctl-core @ git+https://github.com/towerctl/core@main",  # TODO: pin to tag at v0.1 release
+    "fastapi>=0.111",
+    "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.4", "httpx>=0.27"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gateway"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
