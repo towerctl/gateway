@@ -11,6 +11,7 @@ dependencies = [
     "towerctl-core @ git+https://github.com/towerctl/core@v0.1.1",
     "fastapi>=0.111",
     "uvicorn>=0.30",
+    "psycopg[binary,pool]>=3.1",
 ]
 
 [project.optional-dependencies]

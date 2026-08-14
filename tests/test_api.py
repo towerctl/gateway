@@ -1,20 +1,28 @@
 from fastapi.testclient import TestClient
 
-from gateway.main import AGENTS, RUNS, app, bus
+from gateway.main import app, bus, store
 
 PUB = {"X-API-Key": "dev-key"}
 INT = {"X-API-Key": "internal-key"}
 
 
 def setup_function():
-    AGENTS.clear()
-    RUNS.clear()
+    # tests always run against MemoryStore (no DATABASE_URL in test env)
+    store._agents.clear()
+    store._runs.clear()
 
 
 def test_auth_required():
     c = TestClient(app)
     assert c.get("/v1/agents").status_code == 401
     assert c.get("/v1/agents", headers=PUB).status_code == 200
+
+
+def test_internal_key_can_read_public_endpoints(monkeypatch):
+    """The runner authenticates with the internal key everywhere (M0 wedge fix)."""
+    monkeypatch.setenv("TOWERCTL_INTERNAL_KEYS", "internal-key")
+    c = TestClient(app)
+    assert c.get("/v1/agents", headers=INT).status_code == 200
 
 
 def test_run_lifecycle(monkeypatch):
@@ -56,3 +64,9 @@ def test_unknown_agent_404():
     c = TestClient(app)
     r = c.post("/v1/runs", json={"agent_id": "agt_nope", "input": "x", "metadata": {}}, headers=PUB)
     assert r.status_code == 404
+
+
+def test_healthz_reports_storage():
+    c = TestClient(app)
+    body = c.get("/healthz").json()
+    assert body["storage"] == "MemoryStore"
